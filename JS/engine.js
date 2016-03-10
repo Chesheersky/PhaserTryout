@@ -5,6 +5,12 @@ function preload() {
     game.load.image('ball', 'sprites/shinyball.png');
 }
 
+var constants = {
+    ACTOR_SPEED : 100,
+    ACTOR_ROTATION_SPEED: 20,
+};
+
+
 var ship;
 var cursors;
 var customBounds;
@@ -95,28 +101,28 @@ function update() {
 
     if (cursors.left.isDown)
     {
-        ship.body.moveLeft(200);
+        ship.body.moveLeft(constants.ACTOR_SPEED);
     }
     else if (cursors.right.isDown)
     {
-        ship.body.moveRight(200);
+        ship.body.moveRight(constants.ACTOR_SPEED);
     }
 
     if (cursors.up.isDown)
     {
-        ship.body.moveUp(200);
+        ship.body.moveUp(constants.ACTOR_SPEED);
     }
     else if (cursors.down.isDown)
     {
-        ship.body.moveDown(200);
+        ship.body.moveDown(constants.ACTOR_SPEED);
     }
 
     if(cursors.turn_left.isDown)
     {
-        ship.body.rotateLeft(20);
+        ship.body.rotateLeft(constants.ACTOR_ROTATION_SPEED);
     }
     else if(cursors.turn_right.isDown)
     {
-        ship.body.rotateRight(20);
+        ship.body.rotateRight(constants.ACTOR_ROTATION_SPEED);
     }
 }
