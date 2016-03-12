@@ -41,7 +41,7 @@ var robot = {
     },
     step:function(){
         this.stop();
-        var nextStep = this.program.pop();
+        var nextStep = this.program.getMove();
         switch(nextStep){
             case 'n':
                 this.north();
@@ -64,6 +64,47 @@ var robot = {
         }
     }
 };
+
+var programm = {
+    instructions:[
+        {
+            instruction: 'n',
+            moves: 70
+        },
+        {
+            instruction: 's',
+            moves: 30
+        },
+        {
+            instruction: 'e',
+            moves: 30
+        },
+        {
+            instruction: 'l',
+            moves: 150
+        },
+        {
+            instruction: 'e',
+            moves: 60
+        },
+        {
+            instruction: 's',
+            moves: 100
+        }
+    ],
+    getMove:function(){
+        if(this.current === undefined || this.current.moves==0)
+            this.current = this.instructions.pop();
+
+        if(this.current === undefined)
+            return 'end';
+
+        this.current.moves--;
+
+        return this.current.instruction;
+    }
+};
+
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
 
@@ -94,7 +135,7 @@ function create() {
     }
 
     robot.create(game, bounds.left, bounds.top);
-    robot.setProgram('ssssssssssssseeeeeeeeeeeeeeeeeeeeeeeellllllllllllllllllllnnnnnnnnnssssssssssssssssssssssssss'.split(''));
+    robot.setProgram(programm);
 
     //  Create a new custom sized bounds, within the world bounds
     customBounds = { left: null, right: null, top: null, bottom: null };
