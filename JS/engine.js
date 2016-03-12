@@ -5,15 +5,52 @@ function preload() {
     game.load.image('ball', 'sprites/shinyball.png');
 }
 
-var constants = {
-    ACTOR_SPEED : 100,
-    ACTOR_ROTATION_SPEED: 20,
+var robot = {
+    constants:{
+        SPEED : 100,
+        ROTATION_SPEED: 20,
+    },
+    stop:function(){
+        this.ingame.body.setZeroVelocity();
+        this.ingame.body.setZeroRotation();
+    },
+    create: function(game, x, y){
+        this.ingame = game.add.sprite(x, y, 'ship');
+        this.ingame.scale.set(2);
+        this.ingame.smoothed = false;
+        this.ingame.animations.add('fly', [0,1,2,3,4,5], 10, true);
+        this.ingame.play('fly');
+
+        //  Create our physics body. A circle assigned the playerCollisionGroup
+        game.physics.p2.enable(this.ingame);
+        this.ingame.body.setRectangle(56, 56);
+    },
+    north:function(){
+        this.ingame.body.moveUp(this.constants.SPEED);
+    },
+    south:function(){
+        this.ingame.body.moveDown(this.constants.SPEED);
+    },
+    west:function(){
+        this.ingame.body.moveLeft(this.constants.SPEED);
+    },
+    east:function(){
+        this.ingame.body.moveRight(this.constants.SPEED);
+    },
+    left:function(){
+        this.ingame.body.rotateLeft(this.constants.ROTATION_SPEED);
+    },
+    right:function(){
+        this.ingame.body.rotateRight(this.constants.ROTATION_SPEED);
+    }
 };
 
-
-var ship;
 var cursors;
 var customBounds;
+
+
+
+
 
 function create() {
 
@@ -33,16 +70,7 @@ function create() {
         ball.body.setCircle(16);
     }
 
-    ship = game.add.sprite(bounds.centerX, bounds.centerY, 'ship');
-    ship.scale.set(2);
-    ship.smoothed = false;
-    ship.animations.add('fly', [0,1,2,3,4,5], 10, true);
-    ship.play('fly');
-
-    //  Create our physics body. A circle assigned the playerCollisionGroup
-    game.physics.p2.enable(ship);
-
-    ship.body.setCircle(28);
+    robot.create(game, bounds.left, bounds.top);
 
     //  Create a new custom sized bounds, within the world bounds
     customBounds = { left: null, right: null, top: null, bottom: null };
@@ -96,33 +124,32 @@ function createPreviewBounds(x, y, w, h) {
 
 function update() {
 
-    ship.body.setZeroVelocity();
-    ship.body.setZeroRotation();
+    robot.stop();
 
     if (cursors.left.isDown)
     {
-        ship.body.moveLeft(constants.ACTOR_SPEED);
+        robot.west();
     }
     else if (cursors.right.isDown)
     {
-        ship.body.moveRight(constants.ACTOR_SPEED);
+        robot.east();
     }
 
     if (cursors.up.isDown)
     {
-        ship.body.moveUp(constants.ACTOR_SPEED);
+        robot.north();
     }
     else if (cursors.down.isDown)
     {
-        ship.body.moveDown(constants.ACTOR_SPEED);
+        robot.south();
     }
 
     if(cursors.turn_left.isDown)
     {
-        ship.body.rotateLeft(constants.ACTOR_ROTATION_SPEED);
+        robot.left();
     }
     else if(cursors.turn_right.isDown)
     {
-        ship.body.rotateRight(constants.ACTOR_ROTATION_SPEED);
+        robot.right();
     }
 }
