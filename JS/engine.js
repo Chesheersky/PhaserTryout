@@ -7,8 +7,11 @@ var robot = {
         this.ingame.body.setZeroVelocity();
         this.ingame.body.setZeroRotation();
     },
+    preload: function(game){
+        game.load.spritesheet('robot', 'sprites/humstar.png', 32, 32);
+    },
     create: function(game, x, y){
-        this.ingame = game.add.sprite(x, y, 'ship');
+        this.ingame = game.add.sprite(x, y, 'robot');
         this.ingame.scale.set(2);
         this.ingame.smoothed = false;
         this.ingame.animations.add('fly', [0,1,2,3,4,5], 10, true);
@@ -105,12 +108,23 @@ var programm = {
     }
 };
 
+var obstacle = {
+    preload: function(game){
+        game.load.image('obstacle', 'sprites/shinyball.png');
+    },
+    create: function(game, x, y){
+        var obstacles = game.add.physicsGroup(Phaser.Physics.P2JS);
+        this.ingame = obstacles.create(x, y, 'obstacle');
+        this.ingame.body.setCircle(16);
+    }
+};
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
+
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'logorobot', { preload: preload, create: create, update: update });
 
 function preload() {
-    game.load.spritesheet('ship', 'sprites/humstar.png', 32, 32);
-    game.load.image('ball', 'sprites/shinyball.png');
+    robot.preload(game);
+    obstacle.preload(game);
 }
 
 var cursors;
@@ -122,17 +136,9 @@ function create() {
     var bounds = new Phaser.Rectangle(100, 100, 400, 400);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
-
     game.physics.p2.restitution = 0.9;
 
-    //  Some balls to collide with
-    balls = game.add.physicsGroup(Phaser.Physics.P2JS);
-
-    for (var i = 0; i < 1; i++)
-    {
-        var ball = balls.create(bounds.randomX, bounds.randomY, 'ball');
-        ball.body.setCircle(16);
-    }
+    obstacle.create(game,bounds.randomX,bounds.randomY);
 
     robot.create(game, bounds.left, bounds.top);
     robot.setProgram(programm);
