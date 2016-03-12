@@ -1,10 +1,3 @@
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
-
-function preload() {
-    game.load.spritesheet('ship', 'sprites/humstar.png', 32, 32);
-    game.load.image('ball', 'sprites/shinyball.png');
-}
-
 var robot = {
     constants:{
         SPEED : 100,
@@ -42,15 +35,45 @@ var robot = {
     },
     right:function(){
         this.ingame.body.rotateRight(this.constants.ROTATION_SPEED);
+    },
+    setProgram:function(program){
+        this.program = program;
+    },
+    step:function(){
+        this.stop();
+        var nextStep = this.program.pop();
+        switch(nextStep){
+            case 'n':
+                this.north();
+                break;
+            case 's':
+                this.south();
+                break;
+            case 'w':
+                this.west();
+                break;
+            case 'e':
+                this.east();
+                break;
+            case 'l':
+                this.left();
+                break;
+            case 'r':
+                this.right();
+                break;
+        }
     }
 };
 
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser-example', { preload: preload, create: create, update: update });
+
+function preload() {
+    game.load.spritesheet('ship', 'sprites/humstar.png', 32, 32);
+    game.load.image('ball', 'sprites/shinyball.png');
+}
+
 var cursors;
 var customBounds;
-
-
-
-
 
 function create() {
 
@@ -71,6 +94,7 @@ function create() {
     }
 
     robot.create(game, bounds.left, bounds.top);
+    robot.setProgram('ssssssssssssseeeeeeeeeeeeeeeeeeeeeeeellllllllllllllllllllnnnnnnnnnssssssssssssssssssssssssss'.split(''));
 
     //  Create a new custom sized bounds, within the world bounds
     customBounds = { left: null, right: null, top: null, bottom: null };
@@ -124,32 +148,5 @@ function createPreviewBounds(x, y, w, h) {
 
 function update() {
 
-    robot.stop();
-
-    if (cursors.left.isDown)
-    {
-        robot.west();
-    }
-    else if (cursors.right.isDown)
-    {
-        robot.east();
-    }
-
-    if (cursors.up.isDown)
-    {
-        robot.north();
-    }
-    else if (cursors.down.isDown)
-    {
-        robot.south();
-    }
-
-    if(cursors.turn_left.isDown)
-    {
-        robot.left();
-    }
-    else if(cursors.turn_right.isDown)
-    {
-        robot.right();
-    }
+    robot.step();
 }
