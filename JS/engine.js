@@ -8,17 +8,18 @@ var robot = {
         this.ingame.body.setZeroRotation();
     },
     preload: function(game){
+        this.game = game;
         game.load.spritesheet('robot', 'sprites/humstar.png', 32, 32);
     },
-    create: function(game, x, y){
-        this.ingame = game.add.sprite(x, y, 'robot');
+    create: function(x, y){
+        this.ingame = this.game.add.sprite(x, y, 'robot');
         this.ingame.scale.set(2);
         this.ingame.smoothed = false;
         this.ingame.animations.add('fly', [0,1,2,3,4,5], 10, true);
         this.ingame.play('fly');
 
         //  Create our physics body. A circle assigned the playerCollisionGroup
-        game.physics.p2.enable(this.ingame);
+        this.game.physics.p2.enable(this.ingame);
         this.ingame.body.setRectangle(56, 56);
     },
     north:function(){
@@ -108,14 +109,17 @@ var programm = {
     }
 };
 
-var obstacle = {
-    preload: function(game){
+var obstacleFactory = {
+    preload: function(game) {
+        this.game = game;
         game.load.image('obstacle', 'sprites/shinyball.png');
+        this.obstacles = game.add.physicsGroup(Phaser.Physics.P2JS);
     },
-    create: function(game, x, y){
-        var obstacles = game.add.physicsGroup(Phaser.Physics.P2JS);
-        this.ingame = obstacles.create(x, y, 'obstacle');
-        this.ingame.body.setCircle(16);
+    create: function(x, y){
+        var ingame = this.obstacles.create(x, y, 'obstacle');
+        ingame.body.setCircle(16);
+
+        return ingame;
     }
 };
 
@@ -124,7 +128,7 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'logorobot', { preload: prel
 
 function preload() {
     robot.preload(game);
-    obstacle.preload(game);
+    obstacleFactory.preload(game);
 }
 
 var cursors;
@@ -138,9 +142,14 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.restitution = 0.9;
 
-    obstacle.create(game,bounds.randomX,bounds.randomY);
+    var obstacles = [
+      obstacleFactory.create(bounds.x + 30, bounds.y + 100),
+      obstacleFactory.create(bounds.x + 180, bounds.y + 150),
+      obstacleFactory.create(bounds.x + 180, bounds.y + 250),
+      obstacleFactory.create(bounds.x + 180, bounds.y + 80)
+    ];
 
-    robot.create(game, bounds.left, bounds.top);
+    robot.create(bounds.left, bounds.top);
     robot.setProgram(programm);
 
     //  Create a new custom sized bounds, within the world bounds
@@ -194,6 +203,5 @@ function createPreviewBounds(x, y, w, h) {
 }
 
 function update() {
-
     robot.step();
 }
