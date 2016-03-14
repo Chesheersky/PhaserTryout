@@ -122,22 +122,48 @@ var obstacleFactory = {
         return ingame;
     }
 };
+var startButton = {
+    preload: function (game){
+        game.load.spritesheet('button', 'sprites/start_button.png', 193, 71);
+    },
+    create: function (x, y, onPress){
+        button = game.add.button(x, y, 'button', onPress, this, 2, 1, 0);
+        button.input.useHandCursor = true;
+    }
+};
 
 
-var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'logorobot', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(
+    800,
+    600,
+    Phaser.CANVAS,
+    'logorobot',
+    {
+        preload: preload,
+        create: create,
+        update: update
+    }
+);
 
 function preload() {
     robot.preload(game);
     obstacleFactory.preload(game);
+    startButton.preload(game);
 }
 
 var cursors;
 var customBounds;
+var isRunning = false;
+
+function run(){
+    isRunning = true;
+}
 
 function create() {
-
     //  The bounds of our physics simulation
     var bounds = new Phaser.Rectangle(100, 100, 400, 400);
+
+    startButton.create(0, 0, run);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.restitution = 0.9;
@@ -149,7 +175,7 @@ function create() {
       obstacleFactory.create(bounds.x + 180, bounds.y + 80)
     ];
 
-    robot.create(bounds.left, bounds.top);
+    robot.create(bounds.x + 30, bounds.y + 30);
     robot.setProgram(programm);
 
     //  Create a new custom sized bounds, within the world bounds
@@ -199,9 +225,9 @@ function createPreviewBounds(x, y, w, h) {
     sim.world.addBody(customBounds.right);
     sim.world.addBody(customBounds.top);
     sim.world.addBody(customBounds.bottom);
-
 }
 
 function update() {
-    robot.step();
+    if(isRunning)
+        robot.step();
 }
