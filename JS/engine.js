@@ -122,16 +122,6 @@ var obstacleFactory = {
         return ingame;
     }
 };
-var startButton = {
-    preload: function (game){
-        game.load.spritesheet('button', 'sprites/start_button.png', 193, 71);
-    },
-    create: function (x, y, onPress){
-        button = game.add.button(x, y, 'button', onPress, this, 2, 1, 0);
-        button.input.useHandCursor = true;
-    }
-};
-
 
 var game = new Phaser.Game(
     800,
@@ -148,10 +138,8 @@ var game = new Phaser.Game(
 function preload() {
     robot.preload(game);
     obstacleFactory.preload(game);
-    startButton.preload(game);
 }
 
-var cursors;
 var customBounds;
 var isRunning = false;
 
@@ -161,9 +149,7 @@ function run(){
 
 function create() {
     //  The bounds of our physics simulation
-    var bounds = new Phaser.Rectangle(100, 100, 400, 400);
-
-    startButton.create(0, 0, run);
+    var bounds = new Phaser.Rectangle(50, 50, 500, 500);
 
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.restitution = 0.9;
@@ -187,15 +173,6 @@ function create() {
     var graphics = game.add.graphics(bounds.x, bounds.y);
     graphics.lineStyle(4, 0xffd900, 1);
     graphics.drawRect(0, 0, bounds.width, bounds.height);
-
-    cursors = game.input.keyboard.addKeys({
-        up: Phaser.KeyCode.W,
-        down: Phaser.KeyCode.S,
-        left: Phaser.KeyCode.A,
-        right: Phaser.KeyCode.D,
-        turn_left: Phaser.KeyCode.Q,
-        turn_right: Phaser.KeyCode.E
-    });
 }
 
 function createPreviewBounds(x, y, w, h) {
