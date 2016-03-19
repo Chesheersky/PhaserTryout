@@ -70,35 +70,23 @@ var robot = {
 };
 
 var programm = {
-    instructions:[
+    create: function(code){
+        this.isntructions =
+        code.split('\n').map(this.parseLine);
+    },
+    parseLine: function(line){
+        var instruction='', value=0;
+        [instruction, value] = line.split(' ');
+        var result =
         {
-            instruction: 'n',
-            moves: 70
-        },
-        {
-            instruction: 's',
-            moves: 30
-        },
-        {
-            instruction: 'e',
-            moves: 30
-        },
-        {
-            instruction: 'l',
-            moves: 150
-        },
-        {
-            instruction: 'e',
-            moves: 60
-        },
-        {
-            instruction: 's',
-            moves: 100
-        }
-    ],
+            instruction: instruction,
+            moves: value
+        };
+        return result;
+    },
     getMove:function(){
         if(this.current === undefined || this.current.moves==0)
-            this.current = this.instructions.pop();
+            this.current = this.isntructions.shift();
 
         if(this.current === undefined)
             return 'end';
@@ -144,6 +132,9 @@ var customBounds;
 var isRunning = false;
 
 function run(){
+    var code = 's 100\ne 60\nl 150\ne 30\ns 30\nn 70';
+    programm.create(code);
+    robot.setProgram(programm);
     isRunning = true;
 }
 
