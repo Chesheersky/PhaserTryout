@@ -132,7 +132,7 @@ var customBounds;
 var isRunning = false;
 
 function run(){
-    var code = 's 100\ne 60\nl 150\ne 30\ns 30\nn 70';
+    var code = document.getElementById('codebox').value;
     programm.create(code);
     robot.setProgram(programm);
     isRunning = true;
