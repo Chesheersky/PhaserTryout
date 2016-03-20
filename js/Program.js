@@ -1,11 +1,10 @@
 var Program = function (code){
     this.parseLine = function(line){
-        var instruction='', value=0;
-        [instruction, value] = line.split(' ');
+        var split = line.split(' ');
         var result =
         {
-            instruction: instruction,
-            moves: value
+            instruction: split[0],
+            moves: split[1]
         };
         return result;
     };
