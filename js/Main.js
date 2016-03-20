@@ -1,6 +1,9 @@
-var theGame = TheGame();
-
-function run(){
-    var code = document.getElementById('codebox').value;
-    theGame.start(code);
-}
+define(['./TheGame'], function (game) {
+    window.API =
+    {
+        run: function () {
+            var code = document.getElementById('codebox').value;
+            game.start(code);
+        }
+    };
+});

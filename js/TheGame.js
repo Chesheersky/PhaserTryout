@@ -1,25 +1,28 @@
-var TheGame = function(){
-    var self = this;
-
-    var robot, obstacleFactory;
+define(['phaser', './Robot', './ObstacleFactory', './Interpreter'], function (Phaser, robot, obstacleFactory,  interpreter) {
+    var game = new Phaser.Game(
+        800,
+        600,
+        Phaser.CANVAS,
+        'logorobot',
+        {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    );
 
     var customBounds;
     var isRunning = false;
 
-    this.start = function(code){
-        var program = Program(code);
-        robot.setProgram(program);
-        isRunning = true;
+
+    function preload () {
+        robot.preload(game);
+        obstacleFactory.preload(game);
     };
 
-    this.preload =  function () {
-            robot = Robot(this.game);
-            obstacleFactory = ObstacleFactory(this.game);
-    };
+    function createPreviewBounds(x, y, w, h) {
 
-    this.createPreviewBounds = function(x, y, w, h) {
-
-        var sim = this.game.physics.p2;
+        var sim = game.physics.p2;
 
         //  If you want to use your own collision group then set it here and un-comment the lines below
         var mask = sim.boundsCollisionGroup.mask;
@@ -46,12 +49,12 @@ var TheGame = function(){
         sim.world.addBody(customBounds.bottom);
     };
 
-    this.create = function () {
+    function create() {
         //todo move the bounds to a separate class
         var bounds = new Phaser.Rectangle(50, 50, 500, 500);
 
-        this.game.physics.startSystem(Phaser.Physics.P2JS);
-        this.game.physics.p2.restitution = 0.9;
+        game.physics.startSystem(Phaser.Physics.P2JS);
+        game.physics.p2.restitution = 0.9;
 
         var obstacles = [
             obstacleFactory.produce(bounds.x + 30, bounds.y + 100),
@@ -65,30 +68,26 @@ var TheGame = function(){
         //  Create a new custom sized bounds, within the world bounds
         customBounds = { left: null, right: null, top: null, bottom: null };
 
-        self.createPreviewBounds(bounds.x, bounds.y, bounds.width, bounds.height);
+        createPreviewBounds(bounds.x, bounds.y, bounds.width, bounds.height);
 
         //  Just to display the bounds
-        var graphics = this.game.add.graphics(bounds.x, bounds.y);
+        var graphics = game.add.graphics(bounds.x, bounds.y);
         graphics.lineStyle(4, 0xffd900, 1);
         graphics.drawRect(0, 0, bounds.width, bounds.height);
     };
 
-    this.update = function() {
+    function update() {
         if(isRunning)
             robot.step();
     };
 
-    this.game = new Phaser.Game(
-        800,
-        600,
-        Phaser.CANVAS,
-        'logorobot',
-        {
-            preload: self.preload,
-            create: self.create,
-            update: self.update
+    var exports =
+    {
+        start: function(code){
+            var program = interpreter.interprete(code);
+            robot.setProgram(program);
+            isRunning = true;
         }
-    );
-
-    return this;
-};
+    };
+    return exports;
+});
