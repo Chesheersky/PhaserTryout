@@ -9,4 +9,4 @@ requirejs.config({
         }
     }
 });
-requirejs(['js/Main.js']);
+requirejs(['js/main.js']);
