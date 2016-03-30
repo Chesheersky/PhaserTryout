@@ -17,7 +17,16 @@ function last(list, expression) {
 };
 function splitExpression(str) {
     //todo take care of spaceless syntax
-    return str.split(' ');
+    var split = str.split(' ');
+
+    if (split.length > 3)
+        return [
+            split[0],
+            split[1],
+            str.substr(split[0].length + split[1].length + 2)
+        ];
+    else
+        return split;
 };
 
 var operations = [
@@ -27,13 +36,19 @@ var leftArguments = [
     new Variable(), new Numeric()
 ];
 var rightArguments = [
-    new Variable(), new Numeric()//, new TwoArgsOperation()
+    new Variable(), new Numeric(), new TwoArgsOperation()
 ];
 
 TwoArgsOperation.prototype.isValid = function (str) {
-    [left, operation, right] = splitExpression(str);
+    if(str == undefined)
+        return false;
 
-    return any(leftArguments, function (x) {
+    var split = splitExpression(str);
+    var left = split[0];
+    var operation = split[1];
+    var right = split[2];
+
+    var result = any(leftArguments, function (x) {
             return x.isValid(left);
         })
         && any(operations, function (x) {
@@ -42,9 +57,14 @@ TwoArgsOperation.prototype.isValid = function (str) {
         && any(rightArguments, function (x) {
             return x.isValid(right);
         });
+
+    return result;
 };
 TwoArgsOperation.prototype.parse = function (str) {
-    [left, operation, right] = splitExpression(str);
+    var split = splitExpression(str);
+    var left = split[0];
+    var operation = split[1];
+    var right = split[2];
 
     left = last(leftArguments, function (x) {
         return x.isValid(left);
