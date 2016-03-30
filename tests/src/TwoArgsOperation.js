@@ -24,10 +24,10 @@ var operations = [
     new Plus()//, new Minus(), new Divide(), new Multiply(), new Equals(),
 ];
 var leftArguments = [
-    new Variable()//, new Numeric
+    new Variable(), new Numeric()
 ];
 var rightArguments = [
-    new Variable()//, new Numeric(), new TwoArgsOperation()
+    new Variable(), new Numeric()//, new TwoArgsOperation()
 ];
 
 TwoArgsOperation.prototype.isValid = function (str) {
