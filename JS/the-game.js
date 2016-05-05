@@ -1,4 +1,4 @@
-define(['phaser', './robot', './obstacleFactory', './interpreter'], function (Phaser, robot, obstacleFactory, interpreter) {
+define(['phaser', './robot', './obstacle-factory', './interpreter'], function (Phaser, robot, obstacleFactory, interpreter) {
     var game = new Phaser.Game(
         800,
         600,

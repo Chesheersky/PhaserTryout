@@ -1,4 +1,4 @@
-define(['./theGame'], function (game) {
+define(['./the-game'], function (game) {
     window.API =
     {
         run: function () {
